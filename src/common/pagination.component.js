@@ -9,21 +9,30 @@ class Pagination extends Component {
     return (
         <nav aria-label="Page navigation example">
           <ul className="pagination">
-            <li className="page-item">
+            <li className="page-item" 
+              onClick={()=>
+                  activePage-1>=1? onClickPage(activePage-1):null
+                  
+              }
+            >
               <span className="page-link">
                 Previous
               </span>
             </li>
             {
-                pages.map((page)=>{
-                    return(
-                        <li className={activePage == page ? 'page-item active' : 'page-item'} onClick={()=>onClickPage(page)}>
-                            <span className="page-link">{page}</span>
-                        </li>
-                    )
+              pages.map((page)=>{
+                  return(
+                    <li className={activePage === page ? 'page-item active' : 'page-item'} onClick={()=>onClickPage(page)}>
+                        <span className="page-link">{page}</span>
+                    </li>
+                  )
                 })
             }
-            <li className="page-item">
+            <li className="page-item"
+             onClick={()=>
+                activePage+1<=pageCount? onClickPage(activePage+1):null
+            }
+            >
               <span className="page-link">
                 Next
               </span>

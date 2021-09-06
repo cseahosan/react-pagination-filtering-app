@@ -1,161 +1,92 @@
 import { Component } from "react";
+import Filtering from "../common/filtering.component";
 import Pagination from "../common/pagination.component";
+import { getGenres, getMovies } from "../services/movies.service";
 
 class Movies extends Component {
   state = {
-    movies: [
-      {
-        title: "The Shawshank Redemption",
-        rank: "1",
-        id: "1",
-        rating: 5,
-      },
-      {
-        title: "The Godfather",
-        rank: "2",
-        id: "2",
-        rating: 5,
-      },
-      {
-        title: "The Godfather: Part II",
-        rank: "3",
-        id: "3",
-        rating: 5,
-      },
-      {
-        title: "Pulp Fiction",
-        rank: "4",
-        id: "4",
-        rating: 5,
-      },
-      {
-        title: "The Good, the Bad and the Ugly",
-        rank: "5",
-        id: "5",
-        rating: 5,
-      },
-      {
-        title: "The Dark Knight",
-        rank: "6",
-        id: "6",
-        rating: 5,
-      },
-      {
-        title: "12 Angry Men",
-        rank: "7",
-        id: "7",
-        rating: 5,
-      },
-      {
-        title: "Schindler's List",
-        rank: "8",
-        id: "8",
-        rating: 5,
-      },
-      {
-        title: "The Lord of the Rings: The Return of the King",
-        rank: "9",
-        id: "9",
-        rating: 5,
-      },
-      {
-        title: "Fight Club",
-        rank: "10",
-        id: "10",
-        rating: 5,
-      },
-      {
-        title: "Star Wars: Episode V - The Empire Strikes Back",
-        rank: "11",
-        id: "11",
-        rating: 5,
-      },
-      {
-        title: "The Lord of the Rings: The Fellowship of the Ring",
-        rank: "12",
-        id: "12",
-        rating: 5,
-      },
-      {
-        title: "One Flew Over the Cuckoo's Nest",
-        rank: "13",
-        id: "13",
-        rating: 5,
-      },
-      {
-        title: "Inception",
-        rank: "14",
-        id: "14",
-        rating: 5,
-      },
-      {
-        title: "Goodfellas",
-        rank: "15",
-        id: "15",
-        rating: 5,
-      },
-      {
-        title: "Star Wars",
-        rank: "16",
-        id: "16",
-        rating: 5,
-      },
-      {
-        title: "Seven Samurai",
-        rank: "17",
-        id: "17",
-        rating: 5,
-      },
-      {
-        title: "Forrest Gump",
-        rank: "18",
-        id: "18",
-        rating: 5,
-      },
-    ],
+    movies: getMovies(),
     activePage: 1,
     pageCount: 5,
+    genres: [{ name: "All Genres" }, ...getGenres()],
+    selectedGenre: "All Genres",
   };
 
   handleClickPage = (page) => {
     this.setState({ ...this.state, activePage: page });
   };
 
-  render() {
+  paginateMovies = () => {
     const { movies, activePage, pageCount } = this.state;
     const start = (activePage - 1) * pageCount;
-    const updatedMovies = movies.slice(start, start + pageCount);
+    const paginatedMovies = movies.slice(start, start + pageCount);
+    return paginatedMovies;
+  };
+
+  handleClickGenre = (genre) => {
+    console.log(genre);
+    this.setState({ ...this.state, selectedGenre: genre });
+  };
+
+  render() {
+    const movies = this.paginateMovies();
 
     return (
       <>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Title</th>
-              <th scope="col">Rating</th>
-              <th scope="col">Your Rating</th>
-            </tr>
-          </thead>
-          <tbody>
-            {updatedMovies.map((movie) => {
-              return (
+        <div className="row">
+          <Filtering
+            genres={this.state.genres}
+            onClickGenre={this.handleClickGenre}
+            selectedGenre={this.state.selectedGenre}
+          />
+          <div className="col-10">
+            <h2> Showing {movies.length} Movies</h2>
+            <hr />
+            <table className="table">
+              <thead>
                 <tr>
-                  <th scope="row">{movie.id}</th>
-                  <td>{movie.title}</td>
-                  <td>{movie.rating}</td>
-                  <td>{movie.your_rating ? "Rated" : "Unrated"}</td>
+                  <th scope="col">Poster</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Rating</th>
+                  <th scope="col">Your Rating</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <Pagination
-          totalItems={movies.length}
-          activePage={activePage}
-          pageCount={pageCount}
-          onClickPage={this.handleClickPage}
-        />
+              </thead>
+              <tbody>
+                {movies.map((movie) => {
+                  return (
+                    <tr>
+                      <th scope="row">
+                        <img
+                          style={{ width: "30px", height: "auto" }}
+                          src={movie.posterurl}
+                          alt="imag"
+                        />
+                      </th>
+                      <td>{movie.title}</td>
+                      <td>
+                        <i class="bi bi-star"></i>
+                        {movie.rating}
+                      </td>
+                      <td>
+                        {movie.your_rating ? (
+                          <i class="bi bi-star-fill"></i>
+                        ) : (
+                          <i class="bi bi-star"></i>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            <Pagination
+              totalItems={this.state.movies.length}
+              activePage={this.state.activePage}
+              pageCount={this.state.pageCount}
+              onClickPage={this.handleClickPage}
+            />
+          </div>
+        </div>
       </>
     );
   }
