@@ -1,6 +1,7 @@
 import { Component } from "react";
 import Filtering from "../common/filtering.component";
 import Pagination from "../common/pagination.component";
+import MoviesTable from "../components/movies-table.component";
 import { getGenres, getMovies } from "../services/movies.service";
 
 class Movies extends Component {
@@ -42,6 +43,7 @@ class Movies extends Component {
   render() {
     const filtered = this.filterMovies();
     const movies = this.paginateMovies(filtered);
+
     return (
       <>
         <div className="row">
@@ -56,43 +58,9 @@ class Movies extends Component {
           <div className="col-10">
             <h2> Showing {movies.length} Movies</h2>
             <hr />
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Poster</th>
-                  <th scope="col">Title</th>
-                  <th scope="col">Rating</th>
-                  <th scope="col">Your Rating</th>
-                </tr>
-              </thead>
-              <tbody>
-                {movies.map((movie) => {
-                  return (
-                    <tr>
-                      <th scope="row">
-                        <img
-                          style={{ width: "30px", height: "auto" }}
-                          src={movie.posterurl}
-                          alt="imag"
-                        />
-                      </th>
-                      <td>{movie.title}</td>
-                      <td>
-                        <i class="bi bi-star"></i>
-                        {movie.imdbRating}
-                      </td>
-                      <td>
-                        {movie.your_rating ? (
-                          <i class="bi bi-star-fill"></i>
-                        ) : (
-                          <i class="bi bi-star"></i>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+
+            <MoviesTable movies={movies} />
+
             {filtered.length > this.state.pageCount && (
               <Pagination
                 totalItems={filtered.length}
