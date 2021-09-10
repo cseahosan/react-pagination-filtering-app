@@ -16,28 +16,42 @@ class Movies extends Component {
     this.setState({ ...this.state, activePage: page });
   };
 
-  paginateMovies = () => {
-    const { movies, activePage, pageCount } = this.state;
+  paginateMovies = (filtered) => {
+    const { activePage, pageCount } = this.state;
     const start = (activePage - 1) * pageCount;
-    const paginatedMovies = movies.slice(start, start + pageCount);
+    const paginatedMovies = filtered.slice(start, start + pageCount);
     return paginatedMovies;
   };
 
   handleClickGenre = (genre) => {
-    console.log(genre);
-    this.setState({ ...this.state, selectedGenre: genre });
+    this.setState({ ...this.state, selectedGenre: genre, activePage: 1 });
+  };
+
+  filterMovies = () => {
+    const { movies, selectedGenre } = this.state;
+
+    const filteredMovies = movies.filter((movie) => {
+      if (selectedGenre === "All Genres") return true;
+
+      if (movie.genres.includes(selectedGenre)) return true;
+      return false;
+    });
+    return filteredMovies;
   };
 
   render() {
-    const movies = this.paginateMovies();
-
+    const filtered = this.filterMovies();
+    const movies = this.paginateMovies(filtered);
     return (
       <>
         <div className="row">
           <Filtering
-            genres={this.state.genres}
-            onClickGenre={this.handleClickGenre}
-            selectedGenre={this.state.selectedGenre}
+            filteredItems={this.state.genres.map((genre, idx) => ({
+              _id: idx,
+              name: genre.name,
+            }))}
+            onClick={this.handleClickGenre}
+            selectedItem={this.state.selectedGenre}
           />
           <div className="col-10">
             <h2> Showing {movies.length} Movies</h2>
@@ -65,7 +79,7 @@ class Movies extends Component {
                       <td>{movie.title}</td>
                       <td>
                         <i class="bi bi-star"></i>
-                        {movie.rating}
+                        {movie.imdbRating}
                       </td>
                       <td>
                         {movie.your_rating ? (
@@ -79,12 +93,14 @@ class Movies extends Component {
                 })}
               </tbody>
             </table>
-            <Pagination
-              totalItems={this.state.movies.length}
-              activePage={this.state.activePage}
-              pageCount={this.state.pageCount}
-              onClickPage={this.handleClickPage}
-            />
+            {filtered.length > this.state.pageCount && (
+              <Pagination
+                totalItems={filtered.length}
+                activePage={this.state.activePage}
+                pageCount={this.state.pageCount}
+                onClickPage={this.handleClickPage}
+              />
+            )}
           </div>
         </div>
       </>
