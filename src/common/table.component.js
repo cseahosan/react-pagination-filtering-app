@@ -2,13 +2,10 @@ import React from "react";
 import TableBody from "./table-body.components";
 import TableHeader from "./table-header.component";
 
-// const items = [{title:
-// }];
-
-export default function Table({ columns, items }) {
+export default function Table({ columns, items, onSort, sortColumn }) {
   return (
     <table className="table">
-      <TableHeader columns={columns} />
+      <TableHeader columns={columns} onSort={onSort} sortColumn={sortColumn} />
       <TableBody columns={columns} items={items} />
     </table>
   );

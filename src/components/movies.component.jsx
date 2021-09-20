@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Component } from "react";
 import Filtering from "../common/filtering.component";
 import Pagination from "../common/pagination.component";
@@ -11,6 +12,7 @@ class Movies extends Component {
     pageCount: 5,
     genres: [{ name: "All Genres" }, ...getGenres()],
     selectedGenre: "All Genres",
+    sortColumn: { path: "title", order: "asc" },
   };
 
   handleClickPage = (page) => {
@@ -40,9 +42,27 @@ class Movies extends Component {
     return filteredMovies;
   };
 
+  handleSort = (sortColumn) => {
+    this.setState({ ...this.state, sortColumn });
+  };
+
+  sortMovies = (movies) => {
+    const { sortColumn } = this.state;
+
+    const sortedMovies = _.orderBy(
+      movies,
+      [sortColumn.path],
+      [sortColumn.order]
+    );
+    return sortedMovies;
+  };
+
   render() {
     const filtered = this.filterMovies();
-    const movies = this.paginateMovies(filtered);
+
+    const sorted = this.sortMovies(filtered);
+
+    const movies = this.paginateMovies(sorted);
 
     return (
       <>
@@ -59,7 +79,11 @@ class Movies extends Component {
             <h2> Showing {movies.length} Movies</h2>
             <hr />
 
-            <MoviesTable movies={movies} />
+            <MoviesTable
+              movies={movies}
+              onSort={this.handleSort}
+              sortColumn={this.state.sortColumn}
+            />
 
             {filtered.length > this.state.pageCount && (
               <Pagination

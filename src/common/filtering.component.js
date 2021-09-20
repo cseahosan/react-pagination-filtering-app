@@ -3,7 +3,7 @@ import React from "react";
 export default function Filter({ filteredItems, selectedItem, onClick }) {
   return (
     <div className="col-2">
-      <ul class="list-group">
+      <ul className="list-group">
         {filteredItems.map((item) => (
           <li
             className={
