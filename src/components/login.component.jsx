@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Input from "../common/input.component";
 
 export default class Login extends Component {
   state = {
@@ -23,34 +24,27 @@ export default class Login extends Component {
   };
 
   render() {
+    const { username, password } = this.state.user;
     return (
       <div className="container w-50 mx-auto">
         <form onSubmit={this.handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              User Name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="username"
+            <Input
+              label=" User Name"
               name="username"
-              onChange={this.handleChange}
-              aria-describedby="emailHelp"
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => this.handleChange(e)}
             />
-            <div id="emailHelp" className="form-text">
-              We'll never share your email with anyone else.
-            </div>
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
+            <Input
+              label="Password"
               name="password"
+              id="password"
+              type="password"
+              value={password}
               onChange={(e) => this.handleChange(e)}
             />
           </div>
