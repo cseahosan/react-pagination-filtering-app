@@ -37,6 +37,7 @@ class Movies extends Component {
       if (selectedGenre === "All Genres") return true;
 
       if (movie.genres.includes(selectedGenre)) return true;
+
       return false;
     });
     return filteredMovies;
@@ -59,14 +60,13 @@ class Movies extends Component {
 
   render() {
     const filtered = this.filterMovies();
-
     const sorted = this.sortMovies(filtered);
-
     const movies = this.paginateMovies(sorted);
 
     return (
       <>
         <div className="row">
+          <h3 className="text-center">Top Movies List</h3>
           <Filtering
             filteredItems={this.state.genres.map((genre, idx) => ({
               _id: idx,
